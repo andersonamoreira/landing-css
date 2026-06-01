@@ -48,6 +48,21 @@ const obs = new IntersectionObserver(entries => {
 
 document.querySelectorAll('.up, .in').forEach(el => obs.observe(el));
 
+/* Email obfuscation */
+document.querySelectorAll('.email-obf').forEach(el => {
+  const email = el.dataset.u + '@' + el.dataset.d;
+  const a = document.createElement('a');
+  a.href = 'mailto:' + email;
+  a.textContent = email;
+  a.style.fontFamily = 'var(--f-body)';
+  a.style.fontSize = '.9rem';
+  a.style.color = 'rgba(215,189,166,.65)';
+  a.style.transition = 'var(--ease)';
+  a.addEventListener('mouseenter', () => a.style.color = 'var(--c-gold)');
+  a.addEventListener('mouseleave', () => a.style.color = 'rgba(215,189,166,.65)');
+  el.replaceWith(a);
+});
+
 /* FAQ accordion */
 document.querySelectorAll('.faq-btn').forEach(btn => {
   btn.addEventListener('click', () => {
