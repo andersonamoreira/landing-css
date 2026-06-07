@@ -1,9 +1,63 @@
 services:
-  web:
+
+  # ─── Nginx — servidor web (produção: portas 80/443) ───────────────────
+  nginx:
     build: .
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./certs:/etc/nginx/certs:ro
+    depends_on:
+      - api
     restart: unless-stopped
+
+  # ─── API Node.js — sistema web + API (porta 8080) ─────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST:     db
+      DB_NAME:     css
+      DB_USER:     postgres
+      DB_PASSWORD: postgres123
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  # ─── PostgreSQL — banco de dados (somente rede interna) ───────────────
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB:       css
+      POSTGRES_USER:     postgres
+      POSTGRES_PASSWORD: postgres123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # ─── Adminer — administração do banco de dados (porta 8888) ───────────
+  adminer:
+    image: adminer:latest
+    ports:
+      - "8888:8080"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  # ─── Portainer — gerenciamento gráfico de contêineres (porta 9000) ────
+  portainer:
+    image: portainer/portainer-ce:latest
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  portainer_data:

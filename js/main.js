@@ -48,6 +48,66 @@ const obs = new IntersectionObserver(entries => {
 
 document.querySelectorAll('.up, .in').forEach(el => obs.observe(el));
 
+/* Modal de agendamento */
+const modalOverlay = document.getElementById('modal-agendamento');
+const btnAgendar   = document.getElementById('btn-agendar');
+const modalClose   = document.getElementById('modal-close');
+const formAgendar  = document.getElementById('form-agendamento');
+const formMsg      = document.getElementById('form-msg');
+const btnSubmit    = document.getElementById('btn-submit');
+
+function openModal()  { modalOverlay.classList.add('open');    document.body.style.overflow = 'hidden'; }
+function closeModal() { modalOverlay.classList.remove('open'); document.body.style.overflow = ''; }
+
+btnAgendar.addEventListener('click', openModal);
+modalClose.addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+formAgendar.addEventListener('submit', async e => {
+  e.preventDefault();
+  formMsg.className = 'form-msg';
+  formMsg.textContent = '';
+
+  const data = {
+    nome:            document.getElementById('f-nome').value.trim(),
+    email:           document.getElementById('f-email').value.trim(),
+    whatsapp:        document.getElementById('f-whatsapp').value.trim(),
+    disponibilidade: document.getElementById('f-disponibilidade').value.trim(),
+  };
+
+  if (!data.nome || !data.email || !data.whatsapp || !data.disponibilidade) {
+    formMsg.textContent = 'Por favor, preencha todos os campos.';
+    formMsg.className = 'form-msg err';
+    return;
+  }
+
+  btnSubmit.disabled = true;
+  btnSubmit.textContent = 'Enviando...';
+
+  try {
+    const res  = await fetch('/api/agendamento', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const json = await res.json();
+    if (json.ok) {
+      formMsg.textContent = 'Solicitação enviada! Camila entrará em contato em breve.';
+      formMsg.className = 'form-msg ok';
+      formAgendar.reset();
+    } else {
+      throw new Error(json.error);
+    }
+  } catch {
+    formMsg.textContent = 'Erro ao enviar. Tente novamente.';
+    formMsg.className = 'form-msg err';
+  } finally {
+    btnSubmit.disabled = false;
+    btnSubmit.textContent = 'Enviar solicitação';
+  }
+});
+
 /* Email obfuscation */
 document.querySelectorAll('.email-obf').forEach(el => {
   const email = el.dataset.u + '@' + el.dataset.d;

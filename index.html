@@ -210,9 +210,7 @@
       </div>
 
       <div class="funciona-cta up">
-        <a class="btn btn-white"
-           href="https://wa.me/5527999449969?text=Ol%C3%A1%2C%20Camila!%20Gostaria%20de%20agendar%20um%20atendimento."
-           target="_blank" rel="noopener">Agendar atendimento</a>
+        <button class="btn btn-white" id="btn-agendar">Agendar Conversa Gratuita</button>
       </div>
     </div>
   </section>
@@ -317,6 +315,39 @@
 
     </div>
   </footer>
+
+  <!-- ─── MODAL AGENDAMENTO ─── -->
+  <div class="modal-overlay" id="modal-agendamento" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal">
+      <div class="modal-hd">
+        <button class="modal-close" id="modal-close" aria-label="Fechar">&times;</button>
+        <span class="label">Conversa gratuita</span>
+        <h3 id="modal-titulo">Agendar conversa<br>gratuita</h3>
+      </div>
+      <div class="modal-body">
+        <p class="form-msg" id="form-msg"></p>
+        <form id="form-agendamento" novalidate>
+          <div class="form-group">
+            <label for="f-nome">Nome</label>
+            <input type="text" id="f-nome" name="nome" placeholder="Seu nome completo" required />
+          </div>
+          <div class="form-group">
+            <label for="f-email">E-mail</label>
+            <input type="email" id="f-email" name="email" placeholder="seu@email.com" required />
+          </div>
+          <div class="form-group">
+            <label for="f-whatsapp">WhatsApp</label>
+            <input type="tel" id="f-whatsapp" name="whatsapp" placeholder="(XX) XXXXX-XXXX" required />
+          </div>
+          <div class="form-group">
+            <label for="f-disponibilidade">Disponibilidade</label>
+            <textarea id="f-disponibilidade" name="disponibilidade" placeholder="Informe seus dias e horários disponíveis para a conversa..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-dark" id="btn-submit">Enviar solicitação</button>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <script src="js/main.js" defer></script>
 </body>
